@@ -1,6 +1,6 @@
 # Tupper
 
-TODO: Write a gem description
+Tupper is a helper for processing uploaded file via web form.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+[TODO] add sample for Sinatra controller.
 
 ## Contributing
 
