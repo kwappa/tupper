@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="dummy_file"><br>
+      <input type="submit" value="upload">
+    </form>
+    <% if tupper.has_uploaded_file? %>
+      <hr>
+      <p>file <%= tupper.uploaded_file %> is uploaded.</p>
+      <p><a href="show_size">show size</a></p>
+      <form method="POST" action="/cleanup">
+        <input type="submit" value="cleanup">
+      </form>
+    <% end %>
+  </body>
+</html>

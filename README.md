@@ -18,7 +18,42 @@ Or install it yourself as:
 
 ## Usage
 
-[TODO] add sample for Sinatra controller.
+usage on Sinatra application:
+
+### upload
+
+```ruby
+post '/upload' do
+  tupper = Tupper.new session
+  tupper.upload params[:file_from_form]
+  redirect '/somewher', 302
+end
+```
+### process uploaded file
+
+```ruby
+get '/show_file_info' do
+  tupper = Tupper.new session
+  if tupper.has_uploaded_file?
+    filename = tupper.uploaded_file
+    # do something
+  end
+  erb :show_file_info, locals: { tupper: tupper }
+end
+```
+
+### cleanup uploaded file and session
+```ruby
+post '/cleanup' do
+  tupper = Tupper.new session
+  tupper.cleanup
+  redirect '/', 302
+end
+```
+
+### more info
+
+see /sample
 
 ## Contributing
 
