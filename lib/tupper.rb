@@ -4,13 +4,16 @@ require_relative "tupper/errors"
 require 'json'
 
 class Tupper
-  DEFAULT_TMP_DIR = File.join(%w{ / tmp tupper })
+  DEFAULT_TMP_DIR   = File.join(%w{ / tmp tupper })
+  DEFAULT_MAX_SIZE  = 8         # MB
   SESSION_STORE_KEY = 'tupper_file_info'
 
-  attr_reader :file_info
+  attr_reader   :temp_dir, :file_info
+  attr_accessor :max_size
 
   def initialize session
-    @session = session
+    @max_size = DEFAULT_MAX_SIZE
+    @session  = session
     unless ((json = @session.fetch(SESSION_STORE_KEY, '')).empty?)
       begin
         @file_info = JSON.parse(json)
@@ -19,6 +22,11 @@ class Tupper
         raise Tupper::SessionError.new('invalid session data')
       end
     end
+  end
+
+  def configure &block
+    yield self
+    self
   end
 
   def temp_dir= temp_dir

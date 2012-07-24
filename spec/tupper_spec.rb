@@ -22,6 +22,9 @@ describe Tupper do
         Dir.exists?(@tupper.temp_dir).should be_true
         @tupper.temp_dir.should == '/tmp/tupper'
       end
+      it "should initialize max_size by default" do
+        @tupper.max_size.should == 8
+      end
     end
 
     context 'with invalid session data' do
@@ -35,6 +38,18 @@ describe Tupper do
       subject { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json) }
       its(:file_info) { should be_instance_of Hash }
     end
+  end
+
+  describe '#configure' do
+    subject {
+      Tupper.new({}).configure do |tupper|
+        tupper.max_size = 16
+        tupper.temp_dir = '/tmp/hoge/piyo'
+      end
+    }
+    its(:max_size) { should == 16 }
+    its(:temp_dir) { should == '/tmp/hoge/piyo' }
+    specify { Dir.exists? '/tmp/hoge/piyo' }
   end
 
   describe '#temp_dir=' do
