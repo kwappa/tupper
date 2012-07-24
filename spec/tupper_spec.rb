@@ -3,6 +3,7 @@ require 'bundler'
 Bundler.setup(:default, :test)
 require 'fakefs/spec_helpers'
 require 'tupper'
+require 'tupper/errors'
 
 describe Tupper do
   include FakeFS::SpecHelpers
@@ -24,7 +25,10 @@ describe Tupper do
     end
 
     context 'with invalid session data' do
-      specify { expect { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => 'invalid json') }.to raise_error RuntimeError }
+      specify {
+        expect { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => 'invalid json') }
+          .to raise_error Tupper::SessionError
+      }
     end
 
     context 'with valid session data' do

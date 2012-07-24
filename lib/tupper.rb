@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-require "tupper/version"
+require_relative "tupper/version"
+require_relative "tupper/errors"
 require 'json'
 
 class Tupper
@@ -15,7 +16,7 @@ class Tupper
         @file_info = JSON.parse(json)
       rescue
         @session.delete(SESSION_STORE_KEY)
-        raise RuntimeError.new('invalid session data')
+        raise Tupper::SessionError.new('invalid session data')
       end
     end
   end
