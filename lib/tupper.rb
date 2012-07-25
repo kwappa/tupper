@@ -6,7 +6,7 @@ class Tupper
   DEFAULT_TMP_DIR = File.join(%w{ / tmp tupper })
   SESSION_STORE_KEY = 'tupper_file_info'
 
-  attr_reader :temp_dir, :file_info
+  attr_reader :file_info
 
   def initialize session
     @session = session
@@ -23,6 +23,10 @@ class Tupper
   def temp_dir= temp_dir
     FileUtils.mkdir_p temp_dir
     @temp_dir = temp_dir
+  end
+
+  def temp_dir
+    @temp_dir || DEFAULT_TMP_DIR
   end
 
   def has_uploaded_file?

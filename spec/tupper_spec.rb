@@ -45,6 +45,13 @@ describe Tupper do
     end
   end
 
+  describe '#temp_dir' do
+    context 'temp_dir is not assigned' do
+      subject { Tupper.new({}) }
+      its(:temp_dir) { should == Tupper::DEFAULT_TMP_DIR }
+    end
+  end
+
   describe '#has_uploaded_file?' do
     context 'before upload' do
       subject { Tupper.new({}) }
