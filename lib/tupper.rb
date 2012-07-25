@@ -41,11 +41,11 @@ class Tupper
     file_hash = "#{Time.now.to_i}_#{Digest::MD5.hexdigest(file_info[:filename]).slice(0, 8)}"
     uploaded_file = File.join(temp_dir, file_hash + File.extname(file_info[:filename]))
     FileUtils.copy(file_info[:tempfile], uploaded_file)
-    tupper_file_info = {
-      uploaded_file: uploaded_file,
-      original_file: file_info[:filename],
-    }.to_json
-    @session.store SESSION_STORE_KEY, tupper_file_info
+    @file_info = {
+      'uploaded_file' => uploaded_file,
+      'original_file' => file_info[:filename],
+    }
+    @session.store SESSION_STORE_KEY, @file_info.to_json
   end
 
   def uploaded_file
