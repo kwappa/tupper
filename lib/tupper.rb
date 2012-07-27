@@ -47,9 +47,14 @@ class Tupper
       self.temp_dir = DEFAULT_TMP_DIR
     end
 
+    if (file_size = File.size(file_info[:tempfile])) > max_size * 1024 * 1024
+      cleanup
+      raise FileSizeError.new("Uploaded file was too large. uploaded_size: #{file_size} bytes / max_size: #{max_size} MB")
+    end
+
     file_hash = "#{Time.now.to_i}_#{Digest::MD5.hexdigest(file_info[:filename]).slice(0, 8)}"
     uploaded_file = File.join(temp_dir, file_hash + File.extname(file_info[:filename]))
-    FileUtils.copy(file_info[:tempfile], uploaded_file)
+    FileUtils.cp(file_info[:tempfile], uploaded_file)
     @file_info = {
       'uploaded_file' => uploaded_file,
       'original_file' => file_info[:filename],

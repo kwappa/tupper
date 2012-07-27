@@ -71,6 +71,33 @@ describe Tupper do
     end
   end
 
+  describe '#upload' do
+    let(:test_dir)  { '/tmp' }
+    let(:test_file) { File.join(test_dir, 'test_file') }
+    before do
+      @tupper = Tupper.new({}).configure { |t| t.max_size = 1 }
+      FileUtils.mkdir_p(test_dir)
+    end
+
+    context 'file that smaller than or equal max size was uploaded' do
+      before do
+        File.open(test_file, 'w') { |f| f.write('*' * 1024 * 1024) }
+        @tupper.upload(tempfile: test_file, filename: 'dummy.txt')
+      end
+      specify { @tupper.should have_uploaded_file }
+    end
+
+    context 'file that lager than max size was uploaded' do
+      before do
+        File.open(test_file, 'w') { |f| f.write('*' * 1024 * (1024 + 1)) }
+      end
+      specify {
+        expect { @tupper.upload(tempfile: test_file, filename: 'too_large_file.txt') }
+          .to raise_error Tupper::FileSizeError
+      }
+    end
+  end
+
   describe '#has_uploaded_file?' do
     context 'before upload' do
       subject { Tupper.new({}) }
