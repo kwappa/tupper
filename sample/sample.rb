@@ -10,7 +10,11 @@ class Sample < Sinatra::Base
 
   post '/upload' do
     tupper = Tupper.new session
-    tupper.upload params[:dummy_file]
+    begin
+      tupper.upload params[:dummy_file]
+    rescue Tupper::FileSizeError
+      halt 500, 'uploaded file is too large.'
+    end
     redirect '/', 302
   end
 

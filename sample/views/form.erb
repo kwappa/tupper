@@ -7,6 +7,7 @@
     <% if tupper.has_uploaded_file? %>
       <hr>
       <p>file <%= tupper.uploaded_file %> is uploaded.</p>
+      <p>original filename was <%= tupper.original_file %>.</p>
       <p><a href="show_size">show size</a></p>
       <form method="POST" action="/cleanup">
         <input type="submit" value="cleanup">
