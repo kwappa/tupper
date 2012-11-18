@@ -14,7 +14,7 @@ class Tupper
   def initialize session
     @max_size = DEFAULT_MAX_SIZE
     @session  = session
-    unless ((json = @session.fetch(SESSION_STORE_KEY, '')).empty?)
+    unless ((json = (@session[SESSION_STORE_KEY] || '')).empty?)
       begin
         @file_info = JSON.parse(json)
       rescue
@@ -59,7 +59,7 @@ class Tupper
       'uploaded_file' => uploaded_file,
       'original_file' => file_info[:filename],
     }
-    @session.store SESSION_STORE_KEY, @file_info.to_json
+    @session[SESSION_STORE_KEY] = @file_info.to_json
   end
 
   def uploaded_file

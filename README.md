@@ -26,7 +26,7 @@ usage on Sinatra application:
 post '/upload' do
   tupper = Tupper.new session
   tupper.upload params[:file_from_form]
-  redirect '/somewher', 302
+  redirect '/somewhere', 302
 end
 ```
 ### process uploaded file
