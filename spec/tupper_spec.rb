@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'bundler'
 Bundler.setup(:default, :test)
+require 'rspec/mocks/standalone'
 require 'fakefs/spec_helpers'
 require 'tupper'
 
@@ -29,6 +30,14 @@ describe Tupper do
 
     context 'with valid session data' do
       subject { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json) }
+      its(:file_info) { should be_instance_of Hash }
+    end
+
+    context 'with rack version 1.5.0 session data' do
+      before do
+        Object.any_instance.stub(:fetch).with(anything).and_return('{"test": 1}')
+      end
+      subject { Tupper.new(Object.new) }
       its(:file_info) { should be_instance_of Hash }
     end
   end

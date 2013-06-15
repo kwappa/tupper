@@ -10,7 +10,14 @@ class Tupper
 
   def initialize session
     @session = session
-    unless ((json = @session.fetch(SESSION_STORE_KEY, '')).empty?)
+
+    if @session.is_a? Hash
+      json = @session.fetch(SESSION_STORE_KEY, '')
+    else
+      json = @session.fetch(SESSION_STORE_KEY) || ''
+    end
+
+    unless json.empty?
       begin
         @file_info = JSON.parse(json)
       rescue
