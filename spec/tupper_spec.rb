@@ -8,20 +8,34 @@ require 'tupper/errors'
 describe Tupper do
   include FakeFS::SpecHelpers
 
+  let(:initialize_json) {
+    "{\"tupper_file_info\":\"test\"}"
+  }
+
   let(:collect_json) {
     "{\"uploaded_file\":\"/tmp/tupper/1341556030_54c89662.txt\",\"original_file\":\"dummy_tsv.txt\"}"
   }
 
+  let(:blank_session)      { Hash.new }
+
+  let(:invalid_session)    { { Tupper::SESSION_STORE_KEY => 'invalid session' } }
+
+  let(:collect_session)    { { Tupper::SESSION_STORE_KEY => collect_json } }
+
+  let(:initialize_session) { { Tupper::SESSION_STORE_KEY => initialize_json } }
+
   describe '#initialize' do
     context 'without session data' do
       before do
-        @tupper = Tupper.new({})
+        @tupper = Tupper.new(blank_session)
         @tupper.temp_dir = Tupper::DEFAULT_TMP_DIR
       end
+
       it "should create default temporary directory" do
         Dir.exists?(@tupper.temp_dir).should be_true
         @tupper.temp_dir.should == '/tmp/tupper'
       end
+
       it "should initialize max_size by default" do
         @tupper.max_size.should == 8
       end
@@ -29,14 +43,14 @@ describe Tupper do
 
     context 'with invalid session data' do
       specify {
-        expect { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => 'invalid json') }
+        expect { Tupper.new(invalid_session) }
           .to raise_error Tupper::SessionError
       }
     end
 
     context 'with valid session data' do
-      subject { Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json) }
-      its(:file_info) { should be_instance_of Hash }
+      subject { Tupper.new(collect_session).file_info }
+      it { should be_instance_of Hash }
     end
   end
 
@@ -54,7 +68,7 @@ describe Tupper do
 
   describe '#temp_dir=' do
     before do
-      @tupper = Tupper.new({})
+      @tupper = Tupper.new(blank_session)
       @tupper.temp_dir = 'hoge'
     end
 
@@ -66,7 +80,7 @@ describe Tupper do
 
   describe '#temp_dir' do
     context 'temp_dir is not assigned' do
-      subject { Tupper.new({}) }
+      subject { Tupper.new(blank_session) }
       its(:temp_dir) { should == Tupper::DEFAULT_TMP_DIR }
     end
   end
@@ -75,7 +89,7 @@ describe Tupper do
     let(:test_dir)  { '/tmp' }
     let(:test_file) { File.join(test_dir, 'test_file') }
     before do
-      @tupper = Tupper.new({}).configure { |t| t.max_size = 1 }
+      @tupper = Tupper.new(blank_session).configure { |t| t.max_size = 1 }
       FileUtils.mkdir_p(test_dir)
     end
 
@@ -100,13 +114,13 @@ describe Tupper do
 
   describe '#has_uploaded_file?' do
     context 'before upload' do
-      subject { Tupper.new({}) }
+      subject { Tupper.new(blank_session) }
       it { should_not have_uploaded_file }
     end
 
     context 'has collect session' do
       before do
-        @tupper = Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json)
+        @tupper = Tupper.new(collect_session)
         FileUtils.mkdir_p Tupper::DEFAULT_TMP_DIR
         FileUtils.touch('/tmp/tupper/1341556030_54c89662.txt')
       end
@@ -116,13 +130,13 @@ describe Tupper do
 
   describe '#uploaded_file' do
     context 'before upload'do
-      subject { Tupper.new({}) }
-      its(:uploaded_file) { should be_nil }
+      subject { Tupper.new(initialize_session).uploaded_file }
+      it { should be_nil }
     end
 
     context 'has collect session' do
       before do
-        @tupper = Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json)
+        @tupper = Tupper.new(collect_session)
         FileUtils.mkdir_p Tupper::DEFAULT_TMP_DIR
         FileUtils.touch('/tmp/tupper/1341556030_54c89662.txt')
       end
@@ -134,7 +148,7 @@ describe Tupper do
 
   describe '#cleanup' do
     before do
-      @tupper = Tupper.new(Tupper::SESSION_STORE_KEY.to_s => collect_json)
+      @tupper = Tupper.new(collect_session)
       FileUtils.mkdir_p Tupper::DEFAULT_TMP_DIR
       FileUtils.touch('/tmp/tupper/1341556030_54c89662.txt')
       @tupper.cleanup

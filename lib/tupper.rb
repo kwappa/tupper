@@ -13,8 +13,14 @@ class Tupper
 
   def initialize session
     @max_size = DEFAULT_MAX_SIZE
-    @session  = session
-    unless ((json = (@session[SESSION_STORE_KEY] || '')).empty?)
+    @session = session
+    if @session.has_key?(SESSION_STORE_KEY)
+      json = @session.fetch(SESSION_STORE_KEY)
+    else
+      json = ''
+    end
+
+    unless json.empty?
       begin
         @file_info = JSON.parse(json)
       rescue
