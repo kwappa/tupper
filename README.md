@@ -1,4 +1,4 @@
-w# Tupper
+# Tupper
 
 Tupper is a helper for processing uploaded file via web form.
 
