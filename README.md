@@ -1,5 +1,7 @@
 # Tupper
 
+[![Circle CI](https://circleci.com/gh/kwappa/tupper.svg?style=svg)](https://circleci.com/gh/kwappa/tupper)
+
 Tupper is a helper for processing uploaded file via web form.
 
 ## Installation
@@ -53,5 +55,4 @@ end
 
 ### more info
 
-see /sample
-
+see `/sample`
