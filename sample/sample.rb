@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 require 'tupper'
 class Sample < Sinatra::Base
   enable :sessions

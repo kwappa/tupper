@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 require_relative "tupper/version"
 require_relative "tupper/errors"
 require 'json'
